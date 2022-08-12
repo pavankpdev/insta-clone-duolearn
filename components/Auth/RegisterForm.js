@@ -2,14 +2,53 @@ import {
     FormControl,
     Input,
     Flex, Button,
-    Link, Text
+    Link, Text, Alert
 } from '@chakra-ui/react'
+import {useRef, useState} from "react";
+import {createUser, createUserInFirestore} from "../../utils/firebase-utils";
 
 const RegisterForm = () => {
+    const [formFields, setFormFields] = useState({
+        email: '',
+        fullname: '',
+        password: '',
+        username: '',
+    })
+    const [error, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+
+    const formRef = useRef()
+
+    const handleOnChange = (e) => {
+        setFormFields({
+            ...formFields,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const submitHandler = async (e) => {
+        e.preventDefault()
+        setIsLoading(true)
+        try {
+            const user = await createUser(formFields)
+            await createUserInFirestore(user.user.uid, formFields.fullname, formFields.username)
+            setIsLoading(false)
+        }
+        catch (e) {
+            setIsLoading(false)
+            setError(e.message)
+        }
+
+    }
+
+
     return <>
         <Flex flexDir={'column'} gap={'10px'} w={'100%'}>
-            <FormControl w={'100%'}>
+            <FormControl ref={formRef} w={'100%'}>
                 <Input
+                    onChange={handleOnChange}
+                    value={formFields.email}
+                    name={'email'}
                     type='email'
                     placeholder={'Phone number or email'}
                     aria-label={'Phone number or email'}
@@ -24,7 +63,10 @@ const RegisterForm = () => {
             </FormControl>
             <FormControl w={'100%'}>
                 <Input
+                    onChange={handleOnChange}
+                    value={formFields.fullname}
                     type='text'
+                    name={'fullname'}
                     placeholder={'Full Name'}
                     aria-label={'Full Name'}
                     borderRadius={'4px'}
@@ -38,7 +80,10 @@ const RegisterForm = () => {
             </FormControl>
             <FormControl w={'100%'}>
                 <Input
+                    onChange={handleOnChange}
+                    value={formFields.username}
                     type='text'
+                    name={'username'}
                     placeholder={'Username'}
                     aria-label={'Username'}
                     borderRadius={'4px'}
@@ -52,7 +97,10 @@ const RegisterForm = () => {
             </FormControl>
             <FormControl w={'100%'}>
                 <Input
+                    onChange={handleOnChange}
+                    value={formFields.password}
                     type='password'
+                    name={'password'}
                     placeholder={'Password'}
                     aria-label={'Password'}
                     borderRadius={'4px'}
@@ -94,7 +142,13 @@ const RegisterForm = () => {
                     fontWeight={'bold'}
                 >Cookie Policy</Link>.
             </Text>
-            <Button colorScheme={'primary'} borderRadius={'4px'} size={'sm'}>
+            {error ? <Alert status='error'>
+                {error}
+            </Alert>: ''}
+            <Button
+                isLoading={isLoading}
+                disabled={isLoading}
+                onClick={submitHandler} colorScheme={'primary'} borderRadius={'4px'} size={'sm'}>
                 Sign Up
             </Button>
         </Flex>
