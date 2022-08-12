@@ -3,7 +3,7 @@ import Item from "./Item";
 
 const Suggestions = () => {
     return <>
-        <Flex flexDir={'column'} w={'100%'} gap={'1rem'} display={{base: 'none', lg: 'flex@ai'}}>
+        <Flex flexDir={'column'} w={'100%'} gap={'1rem'} display={{base: 'none', lg: 'flex'}}>
             <Heading
                 as={'h4'}
                 textTransform={'uppercase'}
