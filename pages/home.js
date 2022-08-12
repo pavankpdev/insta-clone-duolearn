@@ -1,12 +1,16 @@
 import {Box, Container, Flex, Grid, useBreakpointValue} from "@chakra-ui/react";
-
+import '../lib/firebase'
 // COMPONENTS
 import Navbar from "../components/Navbar";
 import FloatingNavbar from "../components/FloatingNavbar";
 import FeedItem from "../components/FeedItem";
 import Suggestions from "../components/Suggestions";
+import {useContext} from "react";
+import {UserContext} from "../context/user";
 
 const Home = () => {
+    const { profile } = useContext(UserContext)
+    console.log({ profile })
 
     const containerMaxWidth = useBreakpointValue({base: 'container.sm', lg: 'container.lg'});
 

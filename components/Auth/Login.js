@@ -1,15 +1,32 @@
-import { Flex, FormControl, Input, Button } from "@chakra-ui/react";
-import { useState } from "react";
+import {Flex, FormControl, Input, Button, Alert} from "@chakra-ui/react";
+import {useContext, useState} from "react";
+import { signInUser } from "../../utils/firebase-utils";
+import { useRouter } from "next/router";
+import {UserContext} from "../../context/user";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter()
+    const { profile, updateProfile } = useContext(UserContext)
 
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
+    const [error, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+  const handleSubmit = async () => {
+        setIsLoading(true)
+      try {
+          const user = await signInUser(email, password)
+          updateProfile(user.user)
+          router.push('/home')
+      } catch (e) {
+          setError(e.message)
+      } finally {
+            setIsLoading(false)
+      }
 
-  const handleSubmit = () => {
-    
+
   };
 
   return (
@@ -47,7 +64,12 @@ const Login = () => {
             value={password}
           />
         </FormControl>
+          {error ? <Alert status='error'>
+              {error}
+          </Alert>: ''}
         <Button
+            isLoading={isLoading}
+            disabled={isLoading}
           colorScheme="primary"
           borderRadius={"4px"}
           onClick={handleSubmit}

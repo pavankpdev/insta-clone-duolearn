@@ -8,6 +8,7 @@ export const UserContext = React.createContext({
         avatar: "",
         bio: "",
     },
+    updateProfile: () => {},
 });
 
 export const UserProvider = ({ children }) => {
