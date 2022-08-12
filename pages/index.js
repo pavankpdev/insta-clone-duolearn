@@ -136,7 +136,7 @@ export default function Login() {
               <Text color={"heading"} fontWeight={"medium"}>
                 Don't have an account?
               </Text>
-              <Link href={"/accounts/register"}>
+              <Link href={"/register"}>
                 <Text color={"#0095f6"}>Sign up</Text>
               </Link>
             </Flex>
